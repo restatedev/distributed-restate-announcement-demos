@@ -1,0 +1,70 @@
+x-environment: &default-env
+  RESTATE_CLUSTER_NAME: "my-cluster"
+  RESTATE_ROLES: '["admin","worker","log-server","metadata-server"]'
+  RESTATE_LOG_FILTER: "restate=info"
+  RESTATE_AUTO_PROVISION: "false"
+  RESTATE_BIFROST__DEFAULT_PROVIDER: "replicated"
+  RESTATE_BIFROST__REPLICATED_LOGLET__DEFAULT_LOG_REPLICATION: 2
+  RESTATE_BOOTSTRAP_NUM_PARTITIONS: 6
+  RESTATE_METADATA_SERVER__TYPE: "replicated"
+  RESTATE_METADATA_CLIENT__ADDRESSES: '["http://node1:5122","http://node2:5122","http://node3:5122"]'
+
+x-variables:
+  common_settings: &common_settings
+    # todo: Update to ghcr.io/restatedev/restate:1.2 once it is released
+    image: ghcr.io/restatedev/restate:main
+    ports:
+      # node port
+      - 5122
+      # admin port
+      - 9070
+      # admin query port
+      - 9071
+      # ingress port
+      - 8080
+
+services:
+  node1:
+    <<: *common_settings
+    ports:
+      - "5122:5122"
+      - "9070:9070"
+      - "9071:9071"
+      - "8080:8080"
+    environment:
+      <<: *default-env
+      RESTATE_NODE_NAME: node1
+      RESTATE_FORCE_NODE_ID: 1
+      RESTATE_ADVERTISED_ADDRESS: "http://node1:5122"
+      # only node1 is allowed to provision the cluster
+      RESTATE_AUTO_PROVISION: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  node2:
+    <<: *common_settings
+    ports:
+      - "25122:5122"
+      - "29070:9070"
+      - "29071:9071"
+      - "28080:8080"
+    environment:
+      <<: *default-env
+      RESTATE_NODE_NAME: node2
+      RESTATE_FORCE_NODE_ID: 2
+      RESTATE_ADVERTISED_ADDRESS: "http://node2:5122"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  node3:
+    <<: *common_settings
+    ports:
+      - "35122:5122"
+      - "39070:9070"
+      - "39071:9071"
+      - "38080:8080"
+    environment:
+      <<: *default-env
+      RESTATE_NODE_NAME: node3
+      RESTATE_FORCE_NODE_ID: 3
+      RESTATE_ADVERTISED_ADDRESS: "http://node3:5122"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
