@@ -16,9 +16,9 @@ Finally, it shows how the cluster stalls when there are not enough nodes availab
 
 ### Pre-demo setup
 
-Start the service:
+Install the npm dependencies and start the service:
 ```shell
-npm run app-dev
+npm install && npm run app-dev
 ```
 
 Go to the folder with the docker compose file for this demo and start the Restate cluster:
@@ -100,9 +100,9 @@ This demo shows how to scale up a Restate deployment from a single node to a clu
 
 ### Pre-demo setup
 
-Start the service:
+Install the npm dependencies and start the service:
 ```shell
-npm run app-dev
+npm install && npm run app-dev
 ```
 
 Go to the folder with the docker compose file for this demo and start the first node of the Restate cluster:
@@ -143,15 +143,10 @@ docker compose up -d node3
 
 Reconfigure the cluster to have log replication set to 2:
 ```shell
-docker compose exec node1 restatectl cluster config set --log-replication 2
+docker compose exec node1 restatectl config set --log-replication 2
 ```
 
-Show that the metadata cluster includes these nodes now:
-```shell
-docker compose exec node1 restatectl meta status
-```
-
-Show the partitioning and leaders per partition:
+Show that these new nodes joined the cluster:
 ```shell
 docker compose exec node1 restatectl status
 ```
