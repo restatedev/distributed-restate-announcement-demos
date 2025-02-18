@@ -12,7 +12,7 @@ x-environment: &default-env
 x-variables:
   common_settings: &common_settings
     # todo: Update to ghcr.io/restatedev/restate:1.2 once it is released
-    image: ghcr.io/restatedev/restate:main
+    image: docker.io/restatedev/restate:1.2
     ports:
       # node port
       - 5122
